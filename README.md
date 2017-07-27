@@ -1,4 +1,4 @@
-# Week 7 - Workshop 2 - Session Management
+# Week 7 - Workshop 3 - Session Management
 
 ## !WORK IN PROGRESS!
 
