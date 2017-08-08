@@ -51,7 +51,7 @@ It is possible to use hashing (the same thing we used to protect our passwords i
 
 In previous hashes we just had to compare the results, password to password. This is known as 'integrity' (ie, is the data the same). But for our cookie this isn't enough, we also need to verify the 'authentication' (ie, did we create the hash).
 
-A HMAC (Hash-based message authentication code) is a way to hash a message in order to verify its integrity and authentication. This is important as we need to be sure that:
+A [HMAC](https://en.wikipedia.org/wiki/Hash-based_message_authentication_code) (Hash-based message authentication code) is a way to hash a message in order to verify its integrity and authentication. This is important as we need to be sure that:
 1. We created the hash.
 2. The message has not changed.
 
