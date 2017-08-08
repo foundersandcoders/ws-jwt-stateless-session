@@ -23,7 +23,7 @@ There are two pieces of information about a user it is useful to store inside a 
 1. Their user id.
 2. Their access privileges.
 
-These two pieces of information will cover most of the requests that people with make to an application.
+This will cover most of the requests that people will make to an application.
 
 Therefore we should put them in our cookie. We could have something like `data=45&admin` and parse it ourselves but it's easier to just use a JavaScript object (which will also make it simpler to add new fields in future).
 
@@ -57,7 +57,7 @@ A HMAC (Hash-based message authentication code) is a way to hash a message in or
 
 A HMAC requires a `secret` (random string), a `value` (the string you want to protect) and `mathematical algorithm` to apply to them.
 
-These same three inputs will always produce the _same result_. So you can store the hash alongside the original message to verify in future, that the message/cookie/whatever has not been tampered with. This prevents the value from being tampered with. This is known as 'signing'.
+These same three inputs will always produce the _same result_. So you can store the HMAC alongside the original message to verify in future, that the message/cookie/whatever has not been tampered with. This is known as 'signing'.
 
 Luckily Node.js has a built-in [HMAC function](https://nodejs.org/dist/latest-v8.x/docs/api/crypto.html#crypto_class_hmac).
 
@@ -69,7 +69,7 @@ Note: When protecting a cookie, defence against brute force attacks (such as `bc
 
 ### EXERCISE 1: PSST
 
-Now we are going to make an program for handling important communication.
+Now we are going to make an program for handling and verifying important communications.
 
 You will be provided a Node.js module (to be used in your terminal), that accepts a 'secret' and returns an object with two functions on it, which you have to implement:
 - sign: This function accepts a value (`String`), and uses the Node.js crypto module to create and return a HMAC `String` of that value.
