@@ -19,7 +19,7 @@ __Featured npm Packages:__
 
 A very simple cookie (key and value) could look like `logged_in=true` or `username=druscilla` but these are not that useful for an application that requires any level of security.
 
-There are two pieces of information about a user that is useful to store inside a cookie.
+There are two pieces of information about a user that are useful to store inside a cookie.
 1. Their user id.
 2. Their access privileges.
 
