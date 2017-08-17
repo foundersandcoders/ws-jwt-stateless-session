@@ -19,7 +19,7 @@ __Featured npm Packages:__
 
 A very simple cookie (key and value) could look like `logged_in=true` or `username=druscilla` but these are not that useful for an application that requires any level of security.
 
-There are two pieces of information about a user it is useful to store inside a cookie.
+There are two pieces of information about a user that are useful to store inside a cookie.
 1. Their user id.
 2. Their access privileges.
 
@@ -151,7 +151,7 @@ const jwt = `${encodedHeader}.${encodedPayload}.${signature}`;
 
 ```
 
-This JWT is protected from tampering, because it is signed, but the payload and header are base64 encoded, which is basically plaintext (its easy to convert back and forth). So do not store sensitive user information in a signed cookie, such as bank balance, DOB etc. To protect the information from being read, you will need to encrypt it, but this is rarely necessary. Another concern is that asymmetric 
+This JWT is protected from tampering, because it is signed, but the payload and header are base64 encoded, which is basically plaintext (its easy to convert back and forth). So do not store sensitive user information in a signed cookie, such as bank balance, DOB etc. To protect the information from being read, you will need to encrypt it, but this is rarely necessary.
 
 ---
 
