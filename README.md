@@ -151,7 +151,7 @@ const jwt = `${encodedHeader}.${encodedPayload}.${signature}`;
 
 ```
 
-This JWT is protected from tampering, because it is signed, but the payload and header are base64 encoded, which is basically plaintext (its easy to convert back and forth). So do not store sensitive user information in a signed cookie, such as bank balance, DOB etc. To protect the information from being read, you will need to encrypt it, but this is rarely necessary.
+This JWT is protected from tampering, because it is signed, but the payload and header are base64 encoded, which is basically plaintext (it's easy to convert back and forth). So do not store sensitive user information in a signed cookie, such as bank balance, DOB etc. To protect the information from being read, you will need to encrypt it, but this is rarely necessary.
 
 ---
 
