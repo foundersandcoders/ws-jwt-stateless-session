@@ -1,5 +1,7 @@
 'use strict';
 
+const crypto = require('crypto');
+
 module.exports = (secret) => {
   if (!secret || typeof secret !== 'string') {
     throw Error('invalid secret!');
