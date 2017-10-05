@@ -4,6 +4,5 @@ const {
   validate
 } = psst('super string');
 
-// call the sign function and log the response
-
-// call the validate function and log the response
+console.log(sign('Mario'));
+console.log(validate('Mario','aBUp4wGxq4muyS9ZfABdcmOO4NC7GbHjy63Yqf68Re8='));
