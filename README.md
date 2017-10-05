@@ -111,14 +111,39 @@ We're done, right? One more thing...
 
 This whole 'signed JSON' idea is such a good one that there is an entire open standard associated with it known as [JSON Web Tokens](https://jwt.io/).
 
+JWT uses [base64](https://en.wikipedia.org/wiki/Base64) encoding which is a way of converting binary data into plain text. Encoding _is not_ the same as encrypting so sensitive information should not be stored within a JWT. We use JWTs for authentication and transferring data that you don't want to be tampered with.
+
 The stucture of a JWT is a string, composed of three sections, joined together by full stops. The sections are:
 
-1. A base64 encoded header object (unrelated to http headers).
-2. A base64 encoded payload object. This is an object with your 'claims' in it. Mostly just a fancy name for the data you want to store in your JWT, but it can also hold 'reserved claims', which are some useful standard values, such as `iss (issuer)`, `exp (expiration time)`, `sub (subject)`, and `aud (audience)`.
-3. A hash of parts `1)` and `2)`,  joined together by a full stop. This is the signature.
+**1. Header** - base64 encoded object about the type of token (jwt) and the type of hashing algorithm (ie HMAC SHA256).
+```js
+{
+  alg: 'SHA256'
+  type: 'JWT'
+}
+```
+**2. Payload** - base64 encoded object with your 'claims' in it. Mostly just a fancy name for the data you want to store in your JWT, but it can also hold 'reserved claims', which are some useful standard values, such as `iss (issuer)`, `exp (expiration time)`, `sub (subject)`, and `aud (audience)`.
+```js
+{
+  "name": "John Doe",
+  "user": true,
+  "admin": false
+}
+```
+**3. Signature** - a hash of parts `1)` and `2)` joined by a full stop.
+```js
+hashFunction(`${encodedHeader}.${encodedPayload}`);
+```
+
+The overall structure of a JWT is:
+> [header].[payload].[signature]
+
+Here is an example of a JWT:
+> eyJhbGciOiJIUzI1NiJ9.aGtqa2hr.IhQxjhZL2hMAR2MDKTD1hppR8KEO9cvEgsE_esJGHUA
+
 
 So to build it in Node.js:
-```
+```js
 const base64Encode = str =>
   Buffer.from(str).toString('base64');
 
