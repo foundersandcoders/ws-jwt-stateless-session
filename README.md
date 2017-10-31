@@ -94,6 +94,8 @@ validate('woof', 'ijveorjgoerovoenboenbon'); // true or false
 
 The file is in `./exercise-1/psst.js`.
 
+To check your code, run `node ./exercise-1/index.js`. The response should be a hash and `true`.
+
 __HINT:__ There is an [npm package](https://www.npmjs.com/package/cookie-signature) (that gets 11 million downloads a month) that uses HMACs to sign their cookies. You should be able to get plenty of help from reading its [source code](https://github.com/tj/node-cookie-signature). Look at how HMAC is being used. No copy pasting!
 
 When you are done you can test it out by sharing a secret between two of you, and begin verifying messages from each other!
