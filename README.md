@@ -205,8 +205,3 @@ Endpoint | Action
 `/login` | Should create a cookie using `jwt.sign`, attach it to the response, and redirect to `/`
 `/logout` | Should remove the cookie and redirect to `/`
 `/auth_check` | Should check if the cookie exists, validate it with `jwt.verify`, and send back a 200 or 401 response with an informative message!
-
----
-
-### Resources
-- [JWT Intro Video](https://jwt.io/introduction/)
