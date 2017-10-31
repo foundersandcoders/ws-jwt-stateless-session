@@ -1,4 +1,4 @@
-# Week 7 - Session Management
+# Founders & Coders - Session Management Workshop
 
 __Learning Outcomes:__
 
