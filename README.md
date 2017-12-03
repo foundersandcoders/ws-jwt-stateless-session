@@ -72,7 +72,7 @@ Note: When protecting a cookie, defence against brute force attacks (such as `bc
 Now we are going to make an program for handling and verifying important communications.
 
 You will be provided a Node.js module (to be used in your terminal), that accepts a 'secret' and returns an object with two functions on it, which you have to implement:
-- sign: This function accepts a value (`String`), and uses the Node.js crypto module to create and return a HMAC `String` of that value.
+- sign: This function accepts a value (`String`), and uses the Node.js crypto module to create and return a HMAC `String` of that value using `SHA256` algorithm and `hex` encoder.
 - validate: This function accepts a value (`String`), and a hash (`String`). It calculates the HMAC of the value and compares it to the hash that was provided. It should return a `Boolean`.
 
 Here is an example of it in use:
