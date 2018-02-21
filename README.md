@@ -1,4 +1,4 @@
-# Founders & Coders - Session Management Workshop
+# Founders & Coders - Jwt Stateless Session Workshop
 
 __Learning Outcomes:__
 
