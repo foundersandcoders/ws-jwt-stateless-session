@@ -1,12 +1,10 @@
-# Founders & Coders - Jwt Stateless Session Workshop
+# Founders & Coders - JWT Stateless Session Workshop
 
 __Learning Outcomes:__
 
-- how to create a JSON cookie
-- what is digital signing
-- how to use signing to prevent data tampering
-- what are JSON Web Tokens
-- how to use JSON Web Tokens
+- What is digital signing?
+- What are JSON Web Tokens (JWTs)?
+- how can we use JWTs with Node?
 
 __Featured npm Packages:__
 - [cookie](https://npmjs.com/package/cookie)
@@ -27,7 +25,7 @@ This will cover most of the requests that people will make to an application.
 
 Therefore we should put them in our cookie. We could have something like `data=45&admin` and parse it ourselves but it's easier to just use a JavaScript object (which will also make it simpler to add new fields in future).
 
-```
+```js
 const userInformation = {
   userId: 45,
   accessPrivileges: {
