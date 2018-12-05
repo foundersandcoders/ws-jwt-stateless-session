@@ -17,13 +17,13 @@ __Featured npm Packages:__
 * [Signing](#signing)
 * [JSON Web Tokens](#json-web-tokens)
 * [exercise 1: creating and validating JWT cookies](#exercise-1-creating-and-validating-jwt-cookies)
-* [optional extra exercise 2- implement a HMAC](#optional-extra-exercise-2--implement-a-hmac)%
+* [optional extra exercise 2- implement a HMAC](#optional-extra-exercise-2--implement-a-hmac)
 
 ## A more useful cookie
 
 A very simple cookie (key and value) could look like `logged_in=true` or `username=druscilla` but sometimes we want to store more, and better-structured data.
 
-:star: How about JSON? :star
+:star: How about JSON? :star:
 
 For example, inside a cookie, it might be useful to store:
 1. a user's id, and
