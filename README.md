@@ -147,7 +147,7 @@ This JWT is protected from tampering, because it is signed. The payload and head
 
 ## exercise 1: creating and validating JWT cookies
 
-The full JWT spec is [rather large](https://tools.ietf.org/html/rfc7519), so as fun as it would be to implement it ourselves like above, lets go with a library.
+The full JWT spec is [rather large](https://tools.ietf.org/html/rfc7519), so as fun as it would be to implement it ourselves, let's go with a library.
 
 We will be using [`jsonwebtoken`](https://www.npmjs.com/package/jsonwebtoken), to create our JWTs. I also recommend using [`cookie`](https://npmjs.com/package/cookie) to parse your incoming `req.headers.cookie` header.
 
