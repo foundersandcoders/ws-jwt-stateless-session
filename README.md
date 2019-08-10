@@ -53,7 +53,7 @@ So when our server reads a cookie from an incoming request, **how can we be sure
 
 ## Signing
 
-We can use hashing (the same thing we used to protect our passwords in the password management [workshop](https://github.com/foundersandcoders/ws-password-management)), in order to know if our cookie has been altered.
+We can use `hashing` in order to know if our cookie has been altered.
 
 However, we need to be sure only we can produce the correct hash. So if an attacker changes the cookie, they cannot produce the correct hash, and we will know the data has changed.
 
@@ -68,9 +68,7 @@ You can store the HMAC alongside the original message to verify that the message
 
 **Metaphor Alert:** Think of the signature like a personal wax seal on a letter- the contents of the letter cannot be changed without breaking the seal, and the correct seal cannot be reproduced without the stamp!
 
-**Note:** When protecting a cookie, defence against brute force attacks (e.g. hashing with `bcrypt`) is not necessary, for two reasons:
-1. Just gaining access to a valid cookie will give you access to all of that users privileges, without any further work.
-2. If you use a long enough string as a 'secret', with a modern hashing algorithm, there is not enough computing power on earth to crack it.
+**N.B.** If you use a [long enough](https://crypto.stackexchange.com/questions/35476/how-long-should-a-hmac-cryptographic-key-be) string as a secret key, with a modern hashing algorithm, the key will be safe from a bruteforce attack with current levels of computing power.
 
 ## JSON Web Tokens
 
