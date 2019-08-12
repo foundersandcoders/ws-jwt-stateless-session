@@ -2,14 +2,26 @@
 
 __Learning Outcomes:__
 
+- Understand the idea of token-based authentication
 - What is digital signing?
 - What are JSON Web Tokens (JWTs)?
-- how can we use JWTs with Node?
+- How to implement token-based authentication using JWTs and Node
 
 __Featured npm Packages:__
 - [cookie](https://npmjs.com/package/cookie)
 - [cookie-signature](https://npmjs.com/package/cookie-signature)
 - [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken)
+
+## Introduction
+
+The first form of `authentication` is typically requiring a user to send their `username` and `password`. 
+But how can we ensure a user remains "logged in" for an extended period? Or equivalently: How can subsequent requests be authenticated by the server, without the browser re-sending the username and password?
+
+`Token-based authentication` is another way to authenticate a user. The idea is that upon login we create a token (a string) and send it back to the browser. The browser then sends the token with subsequent requests, and if the token can be verified (i.e. it is a legitimate token issued by the server), the user is authenticated.
+
+**N.B.** In this workshop, we will transfer our `token` between the server and browser on a cookie, but it is also common to send tokens in a request header.
+
+**N.B.** This token authentication is `stateless`, because no data persists on the server in relation to individual tokens. This is in contrast with stateful sessions, where a `session` is created in a database, and the session id is sent to the browser. Then the browser sends the id with each request, and the server checks in the database to validate the session. Being stateless, `token-based authentication` is less memory-intensive than `session-based authentication`, but both methods also have other pros and cons, which you can read about online.
 
 ## Contents
 
@@ -139,7 +151,7 @@ const jwt = `${encodedHeader}.${encodedPayload}.${signature}`;
 
 ```
 
-This JWT is protected from tampering, because it is signed. The payload and header are base64 encoded (to reduce the length), but they can easily be converted back to plain text- **their contents are not secret**. So **do not store sensitive user information in a JWT being sent as a cookie**, such as bank balance, DOB etc. To protect the information from being read, you would need to encrypt it, but in general, it is advised to never store sensitive data on a cookie.
+This JWT is protected from tampering, because it is signed. The payload and header are base64 encoded (to reduce the length), but they can easily be converted back to plain text- **their contents are not secret**. So **do not store sensitive user information in a JWT being sent as a cookie**, such as bank balance, DOB etc. To protect the information from being read, you would need to encrypt it, but in general, it is advised to **never store sensitive data on a cookie.**
 
 ---
 
