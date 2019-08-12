@@ -1,33 +1,48 @@
-# Founders & Coders - Jwt Stateless Session Workshop
+# Founders & Coders - JWT Stateless Session Workshop
 
 __Learning Outcomes:__
 
-- how to create a JSON cookie
-- what is digital signing
-- how to use signing to prevent data tampering
-- what are JSON Web Tokens
-- how to use JSON Web Tokens
+- Understand the idea of token-based authentication
+- What is digital signing?
+- What are JSON Web Tokens (JWTs)?
+- How to implement token-based authentication using JWTs and Node
 
 __Featured npm Packages:__
 - [cookie](https://npmjs.com/package/cookie)
 - [cookie-signature](https://npmjs.com/package/cookie-signature)
 - [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken)
 
----
+## Introduction
 
-### A useful cookie
+The first form of `authentication` is typically requiring a user to send their `username` and `password`. 
+But how can we ensure a user remains "logged in" for an extended period? Or equivalently: How can subsequent requests be authenticated by the server, without the browser re-sending the username and password?
 
-A very simple cookie (key and value) could look like `logged_in=true` or `username=druscilla` but these are not that useful for an application that requires any level of security.
+`Token-based authentication` is another way to authenticate a user. The idea is that upon login we create a token (a string) and send it back to the browser. The browser then sends the token with subsequent requests, and if the token can be verified (i.e. it is a legitimate token issued by the server), the user is authenticated.
 
-There are two pieces of information about a user that are useful to store inside a cookie.
-1. Their user id.
-2. Their access privileges.
+**N.B.** In this workshop, we will transfer our `token` between the server and browser on a cookie, but it is also common to send tokens in a request header.
 
-This will cover most of the requests that people will make to an application.
+**N.B.** This token authentication is `stateless`, because no data persists on the server in relation to individual tokens. This is in contrast with stateful sessions, where a `session` is created in a database, and the session id is sent to the browser. Then the browser sends the id with each request, and the server checks in the database to validate the session. Being stateless, `token-based authentication` is less memory-intensive than `session-based authentication`, but both methods also have other pros and cons, which you can read about online.
 
-Therefore we should put them in our cookie. We could have something like `data=45&admin` and parse it ourselves but it's easier to just use a JavaScript object (which will also make it simpler to add new fields in future).
+## Contents
 
-```
+* [A more useful cookie](#a-more-useful-cookie)
+* [Signing](#signing)
+* [JSON Web Tokens](#json-web-tokens)
+* [exercise 1: creating and validating JWT cookies](#exercise-1-creating-and-validating-jwt-cookies)
+* [optional extra exercise 2- implement a HMAC](#optional-extra-exercise-2--implement-a-hmac)
+
+## A more useful cookie
+
+A very simple cookie (key and value) could look like `logged_in=true` or `username=druscilla` but sometimes we want to store more, and better-structured data.
+
+:star: How about JSON? :star:
+
+For example, inside a cookie, it might be useful to store:
+1. a user's id, and
+2. their access privileges.
+
+We could write in our handler:
+```js
 const userInformation = {
   userId: 45,
   accessPrivileges: {
@@ -38,84 +53,42 @@ const userInformation = {
 
 const cookieValue = JSON.stringify(userInformation);
 
-req.setHeader('Set-Cookie', `data=${cookieValue}; HttpOnly; Secure`);
+res.setHeader(
+  'Set-Cookie',
+  `data=${cookieValue}; HttpOnly; Secure`
+);
 ```
 
-Great! We now have a cookie that we can add as much information to as we need, but there is still a big problem: This cookie can be very easily tampered with. (For example, by opening up the DevTools 'Application' tab and setting `admin` to `true`)
+Great! We now have a cookie that we can add as much information to as we need, but we still have the same **big security problem**: This cookie can be very easily tampered with. (For example, by opening up the DevTools 'Application' tab and setting `admin` to `true`)
 
-So when our server reads a cookie from an incoming request, how can we be sure that the cookie has not been edited?
+So when our server reads a cookie from an incoming request, **how can we be sure that the cookie has not been edited?**
 
-### What is signing?
+## Signing
 
-It is possible to use hashing (the same thing we used to protect our passwords in [Workshop 1](https://github.com/foundersandcoders/ws-password-management)), in order to protect our cookie from being altered.
+We can use `hashing` in order to know if our cookie has been altered.
 
-In previous hashes we just had to compare the results, password to password. This is known as 'integrity' (ie, is the data the same). But for our cookie this isn't enough, we also need to verify the 'authentication' (ie, did we create the hash).
+However, we need to be sure only we can produce the correct hash. So if an attacker changes the cookie, they cannot produce the correct hash, and we will know the data has changed.
 
-A [HMAC](https://en.wikipedia.org/wiki/Hash-based_message_authentication_code) (Hash-based message authentication code) is a way to hash a message in order to verify its integrity and authentication. This is important as we need to be sure that:
-1. We created the hash.
-2. The message has not changed.
+A [HMAC](https://en.wikipedia.org/wiki/Hash-based_message_authentication_code) (Hash-based message authentication code) is a code which authenticates a message using a hash. In other words, it is exactly what we need!
 
-A HMAC requires a `secret` (random string), a `value` (the string you want to protect) and `mathematical algorithm` to apply to them.
+A HMAC requires:
+- a `secret`: a long random string which is private,
+- a `value`: the message you want to sign, and
+- a `mathematical algorithm` to create the hash.
 
-These same three inputs will always produce the _same result_. So you can store the HMAC alongside the original message to verify in future, that the message/cookie/whatever has not been tampered with. This is known as 'signing'.
+You can store the HMAC alongside the original message to verify that the message/cookie/whatever has not been tampered with. This is known as **signing**.
 
-Luckily Node.js has a built-in [HMAC function](https://nodejs.org/dist/latest-v8.x/docs/api/crypto.html#crypto_class_hmac).
+**Metaphor Alert:** Think of the signature like a personal wax seal on a letter- the contents of the letter cannot be changed without breaking the seal, and the correct seal cannot be reproduced without the stamp!
 
-Note: When protecting a cookie, defence against brute force attacks (such as `bcrypt`) is not necessary, for two reasons:
-1. Just gaining access to a valid cookie will give you access to all of that users privileges, without any further work.
-2. If you use a long, random string as a 'secret', with a modern hashing algorithm, there is not enough computing power on earth to crack that.
+**N.B.** If you use a [long enough](https://crypto.stackexchange.com/questions/35476/how-long-should-a-hmac-cryptographic-key-be) string as a secret key, with a modern hashing algorithm, the key will be safe from a bruteforce attack with current levels of computing power.
 
----
-
-### EXERCISE 1: PSST
-
-Now we are going to make an program for handling and verifying important communications.
-
-You will be provided a Node.js module (to be used in your terminal), that accepts a 'secret' and returns an object with two functions on it, which you have to implement:
-- sign: This function accepts a value (`String`), and uses the Node.js crypto module to create and return a HMAC `String` of that value using `SHA256` algorithm and `hex` encoder.
-- validate: This function accepts a value (`String`), and a hash (`String`). It calculates the HMAC of the value and compares it to the hash that was provided. It should return a `Boolean`.
-
-Here is an example of it in use:
-```
-const psst = require('./psst.js');
-
-const { sign, validate } = psst('super secret string');
-
-// Regular string
-sign('winnie');
-// 'f7f697686a57ed3308f7c536c8394ee55beb3540aab58340fba104a997b921ed'
-
-// Or JSON string
-sign('{"admin":true}');
-// '97076541ba62ce457ef24935d67253227c6081a230150ac468ee9b8e132d2d01'
-
-validate('woof', 'ijveorjgoerovoenboenbon'); // true or false
-```
-
-The file is in `./exercise-1/psst.js`.
-
-To check your code, run `node ./exercise-1/index.js`. The response should be a hash and `true`.
-
-__HINT:__ There is an [npm package](https://www.npmjs.com/package/cookie-signature) (that gets 11 million downloads a month) that uses HMACs to sign their cookies. You should be able to get plenty of help from reading its [source code](https://github.com/tj/node-cookie-signature). Look at how HMAC is being used. No copy pasting!
-
-When you are done you can test it out by sharing a secret between two of you, and begin verifying messages from each other!
-
----
-
-Whew! So now we know how to:
-
-1. Store plenty of information on our cookie.
-2. Prevent it from being tampered with.
-
-We're done, right? One more thing...
-
-### JSON Web Tokens
+## JSON Web Tokens
 
 This whole 'signed JSON' idea is such a good one that there is an entire open standard associated with it known as [JSON Web Tokens](https://jwt.io/).
 
-JWT uses [base64](https://en.wikipedia.org/wiki/Base64) encoding which is a way of converting binary data into plain text. Encoding _is not_ the same as encrypting so sensitive information should not be stored within a JWT. We use JWTs for authentication and transferring data that you don't want to be tampered with.
+JWT uses [base64](https://en.wikipedia.org/wiki/Base64) encoding which is a way of converting binary data into plain text. Encoding _is not_ the same as encrypting so **sensitive information should not be stored within a JWT**. We use JWTs for authentication and transferring data that you don't want to be tampered with.
 
-The stucture of a JWT is a string, composed of three sections, joined together by full stops. The sections are:
+**A JWT is just a string**, composed of three sections, joined together by full stops. The sections are:
 
 **1. Header** - base64 encoded object about the type of token (jwt) and the type of hashing algorithm (ie HMAC SHA256).
 ```js
@@ -178,25 +151,25 @@ const jwt = `${encodedHeader}.${encodedPayload}.${signature}`;
 
 ```
 
-This JWT is protected from tampering, because it is signed, but the payload and header are base64 encoded, which is basically plaintext (it's easy to convert back and forth). So do not store sensitive user information in a signed cookie, such as bank balance, DOB etc. To protect the information from being read, you will need to encrypt it, but this is rarely necessary.
+This JWT is protected from tampering, because it is signed. The payload and header are base64 encoded (to reduce the length), but they can easily be converted back to plain text- **their contents are not secret**. So **do not store sensitive user information in a JWT being sent as a cookie**, such as bank balance, DOB etc. To protect the information from being read, you would need to encrypt it, but in general, it is advised to **never store sensitive data on a cookie.**
 
 ---
 
-### EXERCISE 2: SUPER COOKIE
+## exercise 1: creating and validating JWT cookies
 
-The full JWT spec is [rather large](https://tools.ietf.org/html/rfc7519), so as fun as it would be to implement it ourselves like above, lets go with a library.
+The full JWT spec is [rather large](https://tools.ietf.org/html/rfc7519), so as fun as it would be to implement it ourselves, let's go with a library.
 
 We will be using [`jsonwebtoken`](https://www.npmjs.com/package/jsonwebtoken), to create our JWTs. I also recommend using [`cookie`](https://npmjs.com/package/cookie) to parse your incoming `req.headers.cookie` header.
 
 Read the docs for both!
 
-#### Set up
-+ `$ cd exercise-2`
+### Set up
++ `$ cd exercise-1`
 + `$ npm i`
 + `$ npm start`
 + Navigate to `localhost:3000`
 
-#### Todo
+### Task
 
 You will see that `index.html` has three buttons, now you must implement the JWT cookie logic on the server side:
 
@@ -205,3 +178,39 @@ Endpoint | Action
 `/login` | Should create a cookie using `jwt.sign`, attach it to the response, and redirect to `/`
 `/logout` | Should remove the cookie and redirect to `/`
 `/auth_check` | Should check if the cookie exists, validate it with `jwt.verify`, and send back a 200 or 401 response with an informative message!
+
+## optional extra exercise 2- implement a HMAC
+
+Now we are going to make an program for handling and verifying important communications.
+
+Node.js has a built-in [HMAC function](https://nodejs.org/dist/latest-v8.x/docs/api/crypto.html#crypto_class_hmac).
+
+You will be provided a Node.js module (to be used in your terminal), that accepts a 'secret' and returns an object with two functions on it, which you have to implement:
+- sign: This function accepts a value (`string`), and uses the Node.js crypto module to create and return a HMAC `string` of that value using `SHA256` algorithm and `hex` encoder.
+- validate: This function accepts a value (`string`), and a hash (`string`). It calculates the HMAC of the value and compares it to the hash that was provided. It should return a `boolean`.
+
+Here is an example of it in use:
+```
+const psst = require('./psst.js');
+
+const { sign, validate } = psst('super secret string');
+
+// Regular string
+sign('winnie');
+// 'f7f697686a57ed3308f7c536c8394ee55beb3540aab58340fba104a997b921ed'
+
+// Or JSON string
+sign('{"admin":true}');
+// '97076541ba62ce457ef24935d67253227c6081a230150ac468ee9b8e132d2d01'
+
+validate('woof', 'an incorrect signature'); // false
+validate(
+  'winnie', 'f7f697686a57ed3308f7c536c8394ee55beb3540aab58340fba104a997b921ed'
+); // true
+```
+
+The file is in `./exercise-2/psst.js`.
+
+To check your code, run `node ./exercise-2/index.js`. The correct response should be a hash and `true`.
+
+__HINT:__ There is an [npm package](https://www.npmjs.com/package/cookie-signature) (that gets 11 million downloads a month) that uses HMACs to sign their cookies. You should be able to get plenty of help from reading its [source code](https://github.com/tj/node-cookie-signature). Look at how HMAC is being used. No copy pasting!
