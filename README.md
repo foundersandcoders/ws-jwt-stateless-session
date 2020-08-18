@@ -90,14 +90,14 @@ JWT uses [base64](https://en.wikipedia.org/wiki/Base64) encoding which is a way 
 
 **A JWT is just a string**, composed of three sections, joined together by full stops. The sections are:
 
-**1. Header** - base64 encoded object about the type of token (jwt) and the type of hashing algorithm (ie HMAC SHA256).
+**1. Header** - a base64 encoded object containing the type of token (jwt) and the type of hashing algorithm (ie HMAC SHA256).
 ```js
 {
   alg: 'SHA256'
   type: 'JWT'
 }
 ```
-**2. Payload** - base64 encoded object with your 'claims' in it. Mostly just a fancy name for the data you want to store in your JWT, but it can also hold 'reserved claims', which are some useful standard values, such as `iss (issuer)`, `exp (expiration time)`, `sub (subject)`, and `aud (audience)`.
+**2. Payload** - a base64 encoded object with your 'claims' in it. Mostly just a fancy name for the data you want to store in your JWT, but it can also hold 'reserved claims', which are some useful standard values, such as `iss (issuer)`, `exp (expiration time)`, `sub (subject)`, and `aud (audience)`.
 ```js
 {
   "name": "John Doe",
