@@ -72,7 +72,7 @@ However, we need to be sure only we can produce the correct hash. So if an attac
 A [HMAC](https://en.wikipedia.org/wiki/Hash-based_message_authentication_code) (Hash-based message authentication code) is a code which authenticates a message using a hash. In other words, it is exactly what we need!
 
 A HMAC requires:
-- a `secret`: a long random string which is private,
+- a `secret` key: a long random string which is private,
 - a `value`: the message you want to sign, and
 - a `mathematical algorithm` to create the hash.
 
@@ -105,9 +105,9 @@ JWT uses [base64](https://en.wikipedia.org/wiki/Base64) encoding which is a way 
   "admin": false
 }
 ```
-**3. Signature** - a hash of parts `1)` and `2)` joined by a full stop.
+**3. Signature** - a "keyed" hash of parts `1)` and `2)` joined by a full stop.
 ```js
-hashFunction(`${encodedHeader}.${encodedPayload}`);
+HMACFunction(`${encodedHeader}.${encodedPayload}`, "our secret key");
 ```
 
 The overall structure of a JWT is:
@@ -140,7 +140,7 @@ const payload = {
 const encodedHeader = base64Encode(JSON.stringify(header));
 const encodedPayload = base64Encode(JSON.stringify(payload));
 
-const signature = hashFunction(`${encodedHeader}.${encodedPayload}`);
+const signature = HMACFunction(`${encodedHeader}.${encodedPayload}`, "our secret key");
 
 // 'Udcna0ETPpRw5m3po3COjicb_cGJvgtnoLZyLnftaaI'
 
@@ -181,7 +181,7 @@ Endpoint | Action
 
 ## optional extra exercise 2- implement a HMAC
 
-Now we are going to make an function for crypographically signing and verifying important communications.
+Now we are going to make an function for cryptographically signing and verifying important communications.
 
 Node.js has a built-in [HMAC function](https://nodejs.org/dist/latest-v8.x/docs/api/crypto.html#crypto_class_hmac). Think of an HMAC as a hash with a secret key / password.
 
