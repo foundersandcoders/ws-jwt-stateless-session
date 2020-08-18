@@ -55,7 +55,7 @@ const cookieValue = JSON.stringify(userInformation);
 
 res.setHeader(
   'Set-Cookie',
-  `data=${cookieValue}; HttpOnly; Secure`
+  `data=${cookieValue}; HttpOnly`
 );
 ```
 
